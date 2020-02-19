@@ -10,7 +10,7 @@ class DatImpo:
         pass
 
     def Import(self):
-        print("ImportFunc")
+        #print("ImportFunc")
         explorer = tk.Tk()
         explorer.withdraw()
         rawfilepath = filedialog.askopenfile(mode="r", filetypes = (("Textdateien","*.txt"),("Alle Dateien","*.*")))
@@ -19,17 +19,22 @@ class DatImpo:
         return rawfile, rawfilepath
 
 class NuFFT:
-    def __init__(self, MaxFreq = 5000, rawdata=""):
-        print("NuFFT __init__", MaxFreq, len(rawdata))
-        self.maxfrequenz = MaxFreq
+    def __init__(self, MaxFreq = 5000, rawdata="",values="",timedata=""):
+        #print("NuFFT __init__", MaxFreq, len(rawdata))
+        self.maxfrequency = MaxFreq
+        self.Zeitschritt = 1/self.maxfrequency
         self.rawfile = rawdata
+        self.om = values
+        self.time_data = timedata
+        if values != "":
+            self.dauer = values[len(values)-1]
     
-    def Frequenzupdate(self,FreqUpdate):
-        print("Frequenzupdate")
-        self.maxfrequenz = FreqUpdate
+    def Frequencyupdate(self,FreqUpdate):
+        #print("Frequenzupdate")
+        self.maxfrequency = FreqUpdate
 
     def ImportData(self):
-        print("importData")
+        #print("importData")
         explorer = tk.Tk()
         explorer.withdraw()
         self.rawfile = filedialog.askopenfile(mode="r", filetypes = (("Textdateien","*.txt"),("Alle Dateien","*.*"))).readlines()
@@ -37,8 +42,6 @@ class NuFFT:
         #return rawfile
 
     def DataConversion(self):
-        print("DataConversion")
-        #Arrays erzeugen
         self.om = [0]*(len(self.rawfile)-1)
         self.time_data = [0]*(len(self.rawfile)-1)
 
@@ -49,19 +52,16 @@ class NuFFT:
             self.time_data[i-1] = float(zeile[2].replace(",","."))
         
         self.dauer = self.om[len(self.om)-1]
-        self.Zeitschritt = 1/self.maxfrequenz
+        self.Zeitschritt = 1/self.maxfrequency
         
-        #return om, time_data
-
     def FFT(self):
-        print("FFT")
         fft = np.fft.fft(self.ri)
         self.fftabs = (np.absolute(fft)*2)/(len(self.ri))
         self.fftfreq2 = np.fft.fftfreq(len(self.uniformPoints),self.Zeitschritt)
 
     def Interpol(self):
         print("Interpol")
-        self.uniformPoints = np.linspace(0,self.dauer,int(self.dauer*self.maxfrequenz))
+        self.uniformPoints = np.linspace(0,self.dauer,int(self.dauer*self.maxfrequency))
         rbf = Rbf(self.om,self.time_data)
         self.ri = rbf(self.uniformPoints)
 
@@ -81,9 +81,23 @@ class NuFFT:
         a[0].set_title("log log")
         a[1].semilogy(self.fftfreq2[:len(self.fftfreq2)//2],self.fftabs[:len(self.fftabs)//2],label="FFT des Eingangssignals")
         a[1].set_title("log y")
-        pyplot.xlim(0,self.maxfrequenz//2)
+        pyplot.xlim(0,self.maxfrequency//2)
         a[0].legend()
         a[1].legend()
+
+    def PlotOutputOptions(self,log="linear"):
+        #print("PlotOutput")
+        pyplot.figure()
+        if log == "linear":
+            pyplot.plot(self.fftfreq2[:len(self.fftfreq2)//2],self.fftabs[:len(self.fftabs)//2],label="FFT des Eingangssignals")
+        elif log == "LogY":
+            pyplot.semilogy(self.fftfreq2[:len(self.fftfreq2)//2],self.fftabs[:len(self.fftabs)//2],label="FFT des Eingangssignals")
+        elif log == "LogX":
+            pyplot.semilogx(self.fftfreq2[:len(self.fftfreq2)//2],self.fftabs[:len(self.fftabs)//2],label="FFT des Eingangssignals")
+        elif log == "LogLog":
+            pyplot.loglog(self.fftfreq2[:len(self.fftfreq2)//2],self.fftabs[:len(self.fftabs)//2],label="FFT des Eingangssignals")
+        pyplot.xlim(0,self.maxfrequency//2)
+        pyplot.legend()
 
     def show(self):
         print("show")
@@ -109,9 +123,6 @@ class NuFFT:
         return output
 
     def easyNuFFT(self):
-        self.DataConversion()
+        #self.DataConversion()
         self.Interpol()
         self.FFT()
-
-
-#Nu = NuFFT(5000)
