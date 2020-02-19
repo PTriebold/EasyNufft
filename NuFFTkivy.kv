@@ -1,0 +1,90 @@
+<nonuniformFFT>:
+    graph : graph
+
+    Button: #Öffnen Button
+        id: Oeffnen
+        text: "\u00D6ffnen"
+        pos_hint: {"x":.01,"top":.99}
+        size_hint: (0.2,0.05)
+        on_press: root.Oeffnen()
+        on_press: FFT.disabled = False
+        #on_press: root.PlotInit()
+
+    Button:
+        id: debug
+        text: "Debug"
+        pos_hint: {"x":.01,"top":.8}
+        size_hint: (0.2,0.05)
+        on_press: root.test()
+
+    Button:
+        id: FFT
+        text: "FFT"
+        pos_hint: {"x": .01, "top":.05}
+        size_hint: (0.2,0.05)
+        disabled: True
+        on_press: root.FFTPlot()
+
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: (0.3,0.2)
+        pos_hint: {"x":0.01,"y":0.1}
+        Label:
+            id: maxfrequenztextUeberschrift
+            text: "Maximale Analysefrequenz"
+            text_size: self.size
+            #size_hint: (0.3,0.05)
+            #pos_hint:{"x":.01,"top":0.25}
+            halign: 'left'
+            valign: 'middle'
+
+        Slider:
+            id: maxfrequenztext
+            min: 1000
+            max: 10000
+            step: 100
+            orientation: "horizontal"
+            #size_hint: (0.3,0.05)
+            #pos_hint: {"x": 0.01, "top": .2}
+
+        Label:
+            id: maxfreqLabel
+            text: str(maxfrequenztext.value/2) +" Hz"
+            text_size: self.size
+            #size_hint: (0.3,0.05)
+            #pos_hint: {"x":0.01,"top":0.15}
+            halign: 'left'
+            valign: 'middle'
+
+        BoxLayout:
+            size_hint_y: 0.05
+            #pos_hint: {"x": 0.01, "top": 0.1}
+            CheckBox:
+                id: InputplotCheck
+                active: False
+                size_hint_x: 0.1
+            Label:
+                text_size: (self.width, None)
+                text: 'Input Plot'
+
+    Graph:
+        id: graph
+        size_hint: (0.65,.9)
+        pos_hint: {"x":0.35,"y":0.05}
+        xlabel: 'Frequenz [Hz]'
+        ylabel: 'Verformung'
+        #xlog: True
+        ylog: True
+        x_ticks_minor: 5
+        x_ticks_major: 250
+        y_ticks_major:  1
+        y_ticks_minor: 10
+        y_grid_label: True
+        x_grid_label: True
+        #padding: 5
+        x_grid: True
+        y_grid: True
+        xmin: 0
+        xmax: 2500
+        ymin: +0.000000001
+        ymax: 1
