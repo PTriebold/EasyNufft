@@ -8,6 +8,8 @@ It is designed to be super easy to use for people with limited python knowledge,
 There is a Library version and a Kivy Application, wich ist not fully working at the Moment.
 
 ## Usage
+You'll need Matplotlib.pyplot, Scipy, numpy, tkinter and math to use this Library.
+
 Say you have some 1D Signal (I'm not quite shure why it is called 1D when it is more or less 2D but thats not the point here) 
 
 You begin with the initalization of the Class, for example:
