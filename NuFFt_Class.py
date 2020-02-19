@@ -24,8 +24,8 @@ class NuFFT:
         self.maxfrequency = MaxFreq
         self.Zeitschritt = 1/self.maxfrequency
         self.rawfile = rawdata
-        self.om = values
-        self.time_data = timedata
+        self.time_data = values
+        self.om = timedata
         if values != "":
             self.dauer = values[len(values)-1]
     
