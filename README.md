@@ -28,3 +28,6 @@ Nu.show()       #Show the plot
 You should now have a typical Matplotlib.pyplot graph on your screen.
 
 ## API
+## Disclaimer
+First Problem: I'm not a professional Programmer. I've just needed an easy way to do this and thought somebody might need this too.
+Second Problem: English is not my first language. Please excuse my non optimal english.
