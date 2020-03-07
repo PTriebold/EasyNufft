@@ -1,6 +1,7 @@
 # Non uniform fast fourier transform
 
 ## Introduction
+
 This Library/Program is/was intended for use with any data Signals created by whatever Program. I've created it to analyze the Data created by Ansys Mechanical.
 
 It is designed to be super easy to use for people with limited python knowledge, as myself.
@@ -8,107 +9,55 @@ It is designed to be super easy to use for people with limited python knowledge,
 There is a Library version and a Kivy Application, wich ist not fully working at the Moment.
 
 ## Usage
-You'll need Matplotlib.pyplot, Scipy, numpy, tkinter and math to use this Library.
 
-Say you have some 1D Signal (I'm not quite shure why it is called 1D when it is more or less 2D but thats not the point here) 
+The fastest and imo. easiest way to interpolate some set of data is via the EasyNuFFT function:
 
-You begin with the initalization of the Class, for example:
 ```python
-Nu = NuFFT(5000, values = ValueList, timedata = TimedataList)
+from NuFFt_Class import NuFFT
+
+NuFFT().easyNuFFT(a,b, maxfreq=200)
 ```
-The **5000** is the frequency in Hz to wich the Data is going to be interpolated. This can later be changed with `NuFFT.Frequenzupdate`.
 
-**ValueList** is a List of the Y part of all the points on the graph.
+In this case `a` is the timespace and `b` are the "measured" values. The maximum frequency we want to observe is set to 200Hz.
 
-**TimedataList** in a List of the X part of all the points on the graph.
+## Example
 
-___
-The next step is the fourier transformation of the data and the plot output:
 ```python
-Nu.EasyNuFFT()                      #Fourier transformation
-Nu.PlotOutputOptions(log = "LogY")  #Create a Plot with Log Y scale
-Nu.show()                           #Show the plot
+from NuFFt_Class import NuFFT
+import numpy as np
 ```
-You should now have a typical Matplotlib.pyplot graph on your screen.
+At first we import the two modules we need. Numpy for the generation of the data and NuFFt_Class for the analysis of said data. Since we only need a part of the NuFFt_Class module, we import only the needed class.
+
+```python
+a = np.linspace(0,3, num=2000)
+b = np.sin(a*100*2*np.pi)+np.sin(a*(20*2*np.pi))+np.sin(a*(50*2*np.pi))+1
+```
+
+Here we generate a set of values compiled from three diffrent sinusoidal functions. One with a frequency of `100Hz`, one with `50Hz` and one with `20Hz`.
+
+```python
+NuFFT().easyNuFFT(a,b, maxfreq=200)
+```
+
+At last we analyse the data, by calling the `easyNuFFt` function and giving it the arguments `a` and `b` and the maximum frequency we want to observe. This function also handles the display of the Plot via `Matplotlib.pyplot`.
+
+```python
+#complete funtion
+
+from NuFFt_Class import NuFFT
+import numpy as np
+
+a = np.linspace(0,3, num=2000)
+b = np.sin(a*100*2*np.pi)+np.sin(a*(20*2*np.pi))+np.sin(a*(50*2*np.pi))+1
+
+NuFFT().easyNuFFT(a,b, maxfreq=200)
+```
 
 ## API
-```python
-NuFFT.__init__(MaxFreq, rawdata, values, timedata)
-```
-Initalisation of the class. All parameters are optional. If you have data diffrent to the Ansys Mechanical Layout, then import the values here.
-___
-
-```python
-NuFFT.Freqencyupdate(FreqUpdate)
-```
-Function to change the interpolation frequency.
-___
-
-```python
-NuFFT.ImportData()
-```
-**ANSYS SPECIFIC** This Function is used for Data only in Ansys Mechanical formated txt Data.
-___
-
-```python
-NuFFT.DataConversion()
-```
-**ANSYS SPECIFIC** This Function is used for Data only in Ansys Mechanical formated txt Data.
-___
-```python
-NuFFT.FFT()
-```
-Run the FFT on the interpolated Data. Requires that `NuFFT.Interpol()` has been run!
-___
-```python
-NuFFT.Interpol()
-```
-Interpolate the given Data.
-___
-```python
-NuFFT.PlotInput()
-```
-Plots the given Inputdata vs. the interpolated Values. 
-TODO: label still in german...
-___
-```python
-NuFFT.PlotOutput()
-```
-**depreceated** Plots a loglog and a log y subplot in a new figure. Requires `NuFFT.show()` to display an Output. 
-TODO: label still in german.
-___
-```python
-NuFFT.PlotOutputOptions(log)
-```
-Creates a new Figure with the NuFFT Data. log can be `linear`, `LogY`, `LogX` or `LogLog` for the axies of the plot. It defaults to `linear`. Requires `NuFFT.show()` to display an Output.
-___
-```python
-NuFFT.show()
-```
-Displays the created Plots.
-___
-```python
-NuFFT.complete()
-```
-**depreceated** Runs down all funtions.
-____
-```python
-NuFFT.cleanup()
-```
-**depreceated** Runs `NuFFT.DataConversion()` and `NuFFT.Interpol()`
-____
-```python
-NuFFT.ReturnOutput()
-```
-Returns the output of the FFT in a ziped list.
-____
-```python
-NuFFT.easyNuFFT()
-```
-Runs `NuFFT.Interpol()` and `NuFFT.FFT()`
-
+The API documentation can be accesed via the github internal Wiki.
 
 ## Disclaimer
+
 - First Problem: I'm not a professional Programmer. I've just needed an easy way to do this and thought somebody might need this too.
 - Second Problem: English is not my first language. Please excuse my non optimal english.
 - Third Problem: This is my first time publishing something on GitHub, so expect some weirdness :S
