@@ -1,7 +1,6 @@
 import numpy as np
 from scipy.interpolate import Rbf
 import matplotlib.pyplot as pyplot
-import math
 import tkinter as tk
 from tkinter import filedialog
 
@@ -60,8 +59,8 @@ class NuFFT:
         self.fftfreq2 = np.fft.fftfreq(len(self.uniformPoints),self.Zeitschritt)
 
     def Interpol(self):
-        print("Interpol")
-        self.uniformPoints = np.linspace(0,self.dauer,int(self.dauer*self.maxfrequency))
+        print(self.om[0])
+        self.uniformPoints = np.linspace(self.om[0],self.dauer,int(self.dauer*self.maxfrequency))
         rbf = Rbf(self.om,self.time_data)
         self.ri = rbf(self.uniformPoints)
 
@@ -85,17 +84,17 @@ class NuFFT:
         a[0].legend()
         a[1].legend()
 
-    def PlotOutputOptions(self,log="linear"):
+    def PlotOutputOptions(self,logX = False, logY = True, colour = "#0000FF"):
         #print("PlotOutput")
         pyplot.figure()
-        if log == "linear":
-            pyplot.plot(self.fftfreq2[:len(self.fftfreq2)//2],self.fftabs[:len(self.fftabs)//2],label="FFT des Eingangssignals")
-        elif log == "LogY":
-            pyplot.semilogy(self.fftfreq2[:len(self.fftfreq2)//2],self.fftabs[:len(self.fftabs)//2],label="FFT des Eingangssignals")
-        elif log == "LogX":
-            pyplot.semilogx(self.fftfreq2[:len(self.fftfreq2)//2],self.fftabs[:len(self.fftabs)//2],label="FFT des Eingangssignals")
-        elif log == "LogLog":
-            pyplot.loglog(self.fftfreq2[:len(self.fftfreq2)//2],self.fftabs[:len(self.fftabs)//2],label="FFT des Eingangssignals")
+        if logX == False and logY == False:
+            pyplot.plot(self.fftfreq2[:len(self.fftfreq2)//2],self.fftabs[:len(self.fftabs)//2],label="FFT des Eingangssignals",color=colour)
+        elif logX == False and logY == True:
+            pyplot.semilogy(self.fftfreq2[:len(self.fftfreq2)//2],self.fftabs[:len(self.fftabs)//2],label="FFT des Eingangssignals",color=colour)
+        elif logX == True and logY == False:
+            pyplot.semilogx(self.fftfreq2[:len(self.fftfreq2)//2],self.fftabs[:len(self.fftabs)//2],label="FFT des Eingangssignals",color=colour)
+        elif logX == True and logY == True:
+            pyplot.loglog(self.fftfreq2[:len(self.fftfreq2)//2],self.fftabs[:len(self.fftabs)//2],label="FFT des Eingangssignals",color=colour)
         pyplot.xlim(0,self.maxfrequency//2)
         pyplot.legend()
 
@@ -112,17 +111,22 @@ class NuFFT:
         self.PlotInput()
         self.PlotOutput()
         self.show()
-    
-    def cleanup(self):
-        print("cleanup")
-        self.DataConversion()
-        self.Interpol()
 
     def ReturnOutput(self):
         output = list(zip(self.fftfreq2[:len(self.fftfreq2)//2],self.fftabs[:len(self.fftabs)//2]))
         return output
 
-    def easyNuFFT(self):
-        #self.DataConversion()
+    def easyNuFFT(self, timedata ,values, maxfreq = 5000, Inputplot = False, logX = False, logY = True, colour = "#0000FF"):
+        self.maxfrequency = maxfreq*2
+        self.Zeitschritt = 1/self.maxfrequency
+        self.time_data = values
+        self.om = timedata
+        self.dauer = values[len(values)-1]
+
         self.Interpol()
         self.FFT()
+        if Inputplot:
+            self.PlotInput()
+        
+        self.PlotOutputOptions(logX=logX, logY=logY, colour = colour)
+        self.show()
